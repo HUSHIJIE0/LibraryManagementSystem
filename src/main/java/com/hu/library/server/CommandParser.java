@@ -2,6 +2,9 @@ package com.hu.library.server;
 
 import com.hu.library.entity.User;
 import com.hu.library.enums.UserType;
+import com.hu.library.repository.impl.XMLBookRepository;
+import com.hu.library.repository.impl.XMLBorrowRecordRepository;
+import com.hu.library.repository.impl.XMLUserRepository;
 import com.hu.library.service.BookService;
 import com.hu.library.service.BorrowRecordService;
 import com.hu.library.service.UserService;
@@ -9,9 +12,10 @@ import com.hu.library.service.impl.BookServiceImpl;
 import com.hu.library.service.impl.BorrowRecordServiceImpl;
 import com.hu.library.service.impl.UserServiceImpl;
 
-import java.io.File;
-import java.io.FileReader;
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -19,9 +23,9 @@ import java.util.Scanner;
 public class CommandParser {
     // 解析并执行命令
     public static void parseCommand(Scanner scanner) {
-        UserService userService = new UserServiceImpl();
-        BookService bookService = new BookServiceImpl();
-        BorrowRecordService borrowRecordService = new BorrowRecordServiceImpl();
+        UserService userService = new UserServiceImpl(new XMLUserRepository());
+        BookService bookService = new BookServiceImpl(new XMLBookRepository(), new XMLBorrowRecordRepository());
+        BorrowRecordService borrowRecordService = new BorrowRecordServiceImpl(new XMLBookRepository(), new XMLBorrowRecordRepository());
         while (true) {
             System.out.println("Enter command: ");
             String input = scanner.nextLine();
@@ -108,7 +112,8 @@ public class CommandParser {
                     bookService.deleteBook(parts.get(1), parts.get(2));
                     break;
                 case "help":
-                    try (FileReader fileReader = new FileReader("COMMAND.md");) {
+                    try (InputStream inputStream = CommandParser.class.getResourceAsStream("/COMMAND.md");
+                         BufferedReader fileReader = new BufferedReader(new InputStreamReader(inputStream))) {
                         int content;
                         while ((content = fileReader.read()) != -1) {
                             System.out.print((char) content);

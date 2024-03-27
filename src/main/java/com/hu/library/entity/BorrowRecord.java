@@ -8,6 +8,8 @@ public class BorrowRecord {
     private String userName;
     // 图书名
     private String bookName;
+    // 作者
+    private String author;
     // 借出时间
     private String borrowDate;
     // 是否归还
@@ -15,11 +17,12 @@ public class BorrowRecord {
     // 归还时间
     private String returnDate;
 
-    public BorrowRecord(String userName, String bookName, String borrowDate, String isReturned, String returnDate) {
+    public BorrowRecord(String userName, String bookName, String author, String borrowDate, String isReturned, String returnDate) {
         this.userName = userName;
         this.bookName = bookName;
-        this.isReturned = isReturned;
+        this.author = author;
         this.borrowDate = borrowDate;
+        this.isReturned = isReturned;
         this.returnDate = returnDate;
     }
 
@@ -41,6 +44,14 @@ public class BorrowRecord {
 
     public void setBookName(String bookName) {
         this.bookName = bookName;
+    }
+
+    public String getAuthor() {
+        return author;
+    }
+
+    public void setAuthor(String author) {
+        this.author = author;
     }
 
     public String getBorrowDate() {

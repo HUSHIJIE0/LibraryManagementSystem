@@ -1,3 +1,5 @@
+package com.hu.library;
+
 import com.hu.library.server.CommandParser;
 
 import java.util.Scanner;
