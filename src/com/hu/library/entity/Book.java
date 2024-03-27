@@ -6,27 +6,28 @@ package com.hu.library.entity;
  */
 public class Book {
     // 书名
-    private String title;
+    private String bookName;
     // 作者
     private String author;
-    // 是否借出
-    private String isbn;
     // 库存数量
-    private int quantity;
+    private int inventory;
 
-    public Book(String title, String author, String isbn, int quantity) {
-        this.title = title;
+    public Book(String bookName, String author, int inventory) {
+        this.bookName = bookName;
         this.author = author;
-        this.isbn = isbn;
-        this.quantity = quantity;
+        this.inventory = inventory;
     }
 
-    public String getTitle() {
-        return title;
+    public Book() {
+
     }
 
-    public void setTitle(String title) {
-        this.title = title;
+    public String getBookName() {
+        return bookName;
+    }
+
+    public void setBookName(String bookName) {
+        this.bookName = bookName;
     }
 
     public String getAuthor() {
@@ -37,19 +38,12 @@ public class Book {
         this.author = author;
     }
 
-    public String getIsbn() {
-        return isbn;
+
+    public int getInventory() {
+        return inventory;
     }
 
-    public void setIsbn(String isbn) {
-        this.isbn = isbn;
-    }
-
-    public int getQuantity() {
-        return quantity;
-    }
-
-    public void setQuantity(int quantity) {
-        this.quantity = quantity;
+    public void setInventory(int inventory) {
+        this.inventory = inventory;
     }
 }

@@ -3,10 +3,15 @@ package com.hu.library.server;
 import com.hu.library.entity.User;
 import com.hu.library.enums.UserType;
 import com.hu.library.service.BookService;
+import com.hu.library.service.BorrowRecordService;
 import com.hu.library.service.UserService;
 import com.hu.library.service.impl.BookServiceImpl;
+import com.hu.library.service.impl.BorrowRecordServiceImpl;
 import com.hu.library.service.impl.UserServiceImpl;
 
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -16,8 +21,9 @@ public class CommandParser {
     public static void parseCommand(Scanner scanner) {
         UserService userService = new UserServiceImpl();
         BookService bookService = new BookServiceImpl();
+        BorrowRecordService borrowRecordService = new BorrowRecordServiceImpl();
         while (true) {
-            System.out.print("Enter command: ");
+            System.out.println("Enter command: ");
             String input = scanner.nextLine();
             // 解析命令
             List<String> parts = parseCommand(input);
@@ -31,14 +37,14 @@ public class CommandParser {
             switch (command) {
                 case "register":
                     if (parts.size() < 3) {
-                        System.out.println("Usage: register <role> <username> <password>");
+                        System.out.println("Usage: register <role> <userName> <password>");
                         continue;
                     }
                     userService.register(UserType.fromString(parts.get(1)), parts.get(2), parts.get(3));
                     break;
                 case "login":
                     if (parts.size() < 3) {
-                        System.out.println("Usage: login <username> <password>");
+                        System.out.println("Usage: login <userName> <password>");
                         continue;
                     }
                     userService.login(parts.get(1), parts.get(2));
@@ -59,23 +65,58 @@ public class CommandParser {
                     bookService.addBook(parts.get(1), parts.get(2), Integer.parseInt(parts.get(3)));
                     break;
                 case "list":
-                    if (currentUser.equals("")) {
+                    if (currentUser == null) {
                         System.out.println("Please login first.");
                         continue;
                     }
                     bookService.listBooks();
                     break;
                 case "search":
-                    // Add search functionality
+                    if (parts.size() < 3) {
+                        System.out.println("Usage: search <name> <author>");
+                        continue;
+                    }
+                    bookService.search(parts.get(1), parts.get(2));
                     break;
                 case "borrow":
-                    // Add borrow functionality
+                    if (parts.size() < 3) {
+                        System.out.println("Usage: borrow <name> <author>");
+                        continue;
+                    }
+                    borrowRecordService.borrowBooks(parts.get(1), parts.get(2));
                     break;
                 case "return":
-                    // Add return functionality
+                    if (parts.size() < 3) {
+                        System.out.println("Usage: return <name> <author>");
+                        continue;
+                    }
+                    borrowRecordService.returnBook(parts.get(1), parts.get(2));
                     break;
                 case "delete":
-                    // Add delete functionality
+                    if (currentUser == null) {
+                        System.out.println("Please login first.");
+                        continue;
+                    }
+                    if (currentUser.getUserType() != UserType.Admin) {
+                        System.out.println("Your are not admin, no permission!");
+                        continue;
+                    }
+                    if (parts.size() < 3) {
+                        System.out.println("Usage: delete <name> <author>");
+                        continue;
+                    }
+                    bookService.deleteBook(parts.get(1), parts.get(2));
+                    break;
+                case "help":
+                    try (FileReader fileReader = new FileReader("COMMAND.md");) {
+                        int content;
+                        while ((content = fileReader.read()) != -1) {
+                            System.out.print((char) content);
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+
                     break;
                 default:
                     System.out.println("Invalid command.");

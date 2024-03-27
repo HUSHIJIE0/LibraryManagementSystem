@@ -76,11 +76,11 @@ public class UserServiceImpl implements UserService {
             Node node = nodeList.item(i);
             if (node.getNodeType() == Node.ELEMENT_NODE) {
                 Element itemElement = (Element) node;
-                String username = itemElement.getElementsByTagName("username").item(0).getTextContent();
+                String userNameExist = itemElement.getElementsByTagName("userName").item(0).getTextContent();
                 String password = itemElement.getElementsByTagName("password").item(0).getTextContent();
                 String userType = itemElement.getElementsByTagName("userType").item(0).getTextContent();
-                if (userName.equals(username)) {
-                    user.setUsername(username);
+                if (userNameExist.equals(userName)) {
+                    user.setUserName(userName);
                     user.setPassword(password);
                     user.setUserType(UserType.valueOf(userType));
                     return user;
@@ -104,9 +104,9 @@ public class UserServiceImpl implements UserService {
             // 创建新数据
             Element dataElement = doc.createElement("item");
 
-            Element usernameElement = doc.createElement("username");
-            usernameElement.appendChild(doc.createTextNode(userName));
-            dataElement.appendChild(usernameElement);
+            Element userNameElement = doc.createElement("userName");
+            userNameElement.appendChild(doc.createTextNode(userName));
+            dataElement.appendChild(userNameElement);
 
             Element passwordElement = doc.createElement("password");
             passwordElement.appendChild(doc.createTextNode(password));

@@ -8,7 +8,7 @@ import com.hu.library.enums.UserType;
  */
 public class User {
     // 用户名
-    private String username;
+    private String userName;
     // 密码
     private String password;
     // 用户类型，枚举
@@ -16,8 +16,8 @@ public class User {
     // 用户状态
     private int status;
 
-    public User(String username, String password, UserType userType) {
-        this.username = username;
+    public User(String userName, String password, UserType userType) {
+        this.userName = userName;
         this.password = password;
         this.userType = userType;
     }
@@ -26,12 +26,12 @@ public class User {
 
     }
 
-    public String getUsername() {
-        return username;
+    public String getUserName() {
+        return userName;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 
     public String getPassword() {

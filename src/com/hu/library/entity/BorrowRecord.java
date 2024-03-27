@@ -5,35 +5,42 @@ package com.hu.library.entity;
  */
 public class BorrowRecord {
     // 用户
-    private String username;
-    // 是否借阅
-    private String isbn;
+    private String userName;
+    // 图书名
+    private String bookName;
     // 借出时间
     private String borrowDate;
+    // 是否归还
+    private String isReturned;
     // 归还时间
     private String returnDate;
 
-    public BorrowRecord(String username, String isbn, String borrowDate, String returnDate) {
-        this.username = username;
-        this.isbn = isbn;
+    public BorrowRecord(String userName, String bookName, String borrowDate, String isReturned, String returnDate) {
+        this.userName = userName;
+        this.bookName = bookName;
+        this.isReturned = isReturned;
         this.borrowDate = borrowDate;
         this.returnDate = returnDate;
     }
 
-    public String getUsername() {
-        return username;
+    public BorrowRecord() {
+
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public String getUserName() {
+        return userName;
     }
 
-    public String getIsbn() {
-        return isbn;
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 
-    public void setIsbn(String isbn) {
-        this.isbn = isbn;
+    public String getBookName() {
+        return bookName;
+    }
+
+    public void setBookName(String bookName) {
+        this.bookName = bookName;
     }
 
     public String getBorrowDate() {
@@ -42,6 +49,14 @@ public class BorrowRecord {
 
     public void setBorrowDate(String borrowDate) {
         this.borrowDate = borrowDate;
+    }
+
+    public String getIsReturned() {
+        return isReturned;
+    }
+
+    public void setIsReturned(String isReturned) {
+        this.isReturned = isReturned;
     }
 
     public String getReturnDate() {
