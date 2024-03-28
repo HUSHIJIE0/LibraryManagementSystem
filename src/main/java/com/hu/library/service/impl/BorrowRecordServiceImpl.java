@@ -23,6 +23,7 @@ public class BorrowRecordServiceImpl implements BorrowRecordService {
 
     @Override
     public void listBorrowedBooks() {
+        // 获取当前登录的用户信息
         User user = SessionManager.getInstance().getCurrentUser();
         List<BorrowRecord> borrowRecords = borrowRecordRepository.listBorrowedBooks(user.getUserName());
         System.out.println("myList:");
@@ -34,14 +35,21 @@ public class BorrowRecordServiceImpl implements BorrowRecordService {
     @Override
     public void borrowBooks(String bookName, String author) {
         User user = SessionManager.getInstance().getCurrentUser();
+        // 查询当前用户是否已经存在未归还借阅
         BorrowRecord borrowRecord = borrowRecordRepository.queryOneBorrowRecord(bookName, author, user.getUserName());
         if (borrowRecord != null) {
             System.out.println("You have already borrowed one.");
             return;
         }
+        // 查询借阅的图书是否存在
         Book book = bookRepository.queryBookByNameAuthor(bookName, author);
+        if (book == null) {
+            System.out.println("The book not exists.");
+            return;
+        }
         int inventory = book.getInventory();
         if (inventory > 0) {
+            // 先减库存，再登记给用户
             if (bookRepository.updateBook(bookName, inventory - 1)) {
                 if (borrowRecordRepository.addBorrowRecord(book)) {
                     System.out.println("Book \"" + bookName + "\" " + " successfully borrowed.");

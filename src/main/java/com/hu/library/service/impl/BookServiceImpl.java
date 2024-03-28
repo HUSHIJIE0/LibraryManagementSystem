@@ -22,11 +22,11 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public void addBook(String bookName, String author, int inventory) {
-        Book book = bookRepository.queryBook(bookName);
+        Book book = bookRepository.queryBookByNameAuthor(bookName, author);
         if (book == null) {
             // 用户不存在，新增用户
             if (bookRepository.addOneBook(bookName, author, inventory)) {
-                System.out.println("Book" + " \"" + bookName + "\" by" + author + " added successfully, inventory:" + inventory);
+                System.out.println("Book" + " \"" + bookName + "\" by " + author + " added successfully, inventory: " + inventory);
             }
         } else {
             int newInventory = inventory + book.getInventory();
@@ -40,7 +40,7 @@ public class BookServiceImpl implements BookService {
     @Override
     public void deleteBook(String bookName, String author) {
         List<BorrowRecord> borrowRecords = borrowRecordRepository.queryOnBorrowRecord(bookName, author);
-        if (borrowRecords.size() > 0) {
+        if (!borrowRecords.isEmpty()) {
             System.out.println("Cannot delete book \"" + bookName + "\" because it is currently borrowed.");
         } else {
             if (bookRepository.deleteOneBook(bookName, author)) {

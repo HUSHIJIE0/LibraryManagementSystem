@@ -1,5 +1,9 @@
 package com.hu.library.enums;
 
+/**
+ * 用户命令验证枚举，由代理统一处理
+ * 扩展了一些命令：myBorrow、help、exit等
+ */
 public enum CommandValidate {
     REGISTER("register", 4, "Usage: register <userType> <username> <password>"),
     LOGIN("login", 3, "Usage: login <username> <password>"),

@@ -12,17 +12,28 @@ import java.util.Set;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
+/**
+ * 反射工具类
+ */
 public class ReflectionUtils {
-    // 获取实现了指定接口的所有类
+    /**
+     * 获取实现了指定接口的所有类
+     * @param interfaceClass
+     * @return
+     * @throws IOException
+     * @throws ClassNotFoundException
+     */
     public static Set<Class<?>> getClassesImplementing(Class<?> interfaceClass) throws IOException, ClassNotFoundException {
         Set<Class<?>> classes = new HashSet<>();
+        // 获取接口类包所在地址
         String packageName = interfaceClass.getPackageName();
         String path = packageName.replace(".", "/");
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+        // 类加载器加载资源
         Enumeration<URL> resources = classLoader.getResources(path);
         while (resources.hasMoreElements()) {
             URL resource = resources.nextElement();
-            // 判断资源类型
+            // 判断资源类型，如果是文件类型，可以直接用目录的方式读取，如果是jar包，则采用jar包内文件遍历方式读取
             if (resource.getProtocol().equals("file")) {
                 File file = new File(resource.getFile());
                 if (file.isDirectory()) {
@@ -37,7 +48,13 @@ public class ReflectionUtils {
         return classes;
     }
 
-
+    /**
+     * 查询文件系统目录下的接口实现
+     * @param directory
+     * @param packageName
+     * @return
+     * @throws ClassNotFoundException
+     */
     private static Set<Class<?>> findClasses(File directory, String packageName) throws ClassNotFoundException {
         Set<Class<?>> classes = new HashSet<>();
         File[] files = directory.listFiles();
@@ -64,7 +81,13 @@ public class ReflectionUtils {
         return false;
     }
 
-
+    /**
+     * 查询jar包中的接口实现
+     * @param jarPath
+     * @param implementations
+     * @throws IOException
+     * @throws ClassNotFoundException
+     */
     private static void loadClassesFromJarFile(String jarPath, Set<Class<?>> implementations) throws IOException, ClassNotFoundException {
         JarFile jarFile = new JarFile(jarPath);
         Enumeration<JarEntry> entries = jarFile.entries();

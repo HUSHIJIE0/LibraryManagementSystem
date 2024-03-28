@@ -2,7 +2,7 @@ package com.hu.library.repository.impl;
 
 import com.hu.library.entity.Book;
 import com.hu.library.repository.BookRepository;
-import com.hu.library.server.XMLManager;
+import com.hu.library.utils.XMLUtil;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -16,29 +16,6 @@ public class XMLBookRepository implements BookRepository {
 
     private static final String BOOKS_FILE = "books_data.xml";
 
-    /**
-     * @param bookName
-     * @return
-     */
-    @Override
-    public Book queryBook(String bookName) {
-        Document doc = XMLManager.getDocument(BOOKS_FILE);
-        NodeList nodeList = doc.getElementsByTagName("item");
-        if (nodeList.getLength() == 0) {
-            return null;
-        }
-        for (int i = 0; i < nodeList.getLength(); i++) {
-            Node node = nodeList.item(i);
-            if (node.getNodeType() == Node.ELEMENT_NODE) {
-                Element itemElement = (Element) node;
-                Book item = itemParse(itemElement);
-                if (item.getBookName().equals(bookName)) {
-                    return item;
-                }
-            }
-        }
-        return null;
-    }
 
     /**
      * @param bookName
@@ -47,11 +24,12 @@ public class XMLBookRepository implements BookRepository {
      */
     @Override
     public Book queryBookByNameAuthor(String bookName, String author) {
-        Document doc = XMLManager.getDocument(BOOKS_FILE);
+        Document doc = XMLUtil.getDocument(BOOKS_FILE);
         NodeList nodeList = doc.getElementsByTagName("item");
         if (nodeList.getLength() == 0) {
             return null;
         }
+        // 遍历xml，获取匹配的记录
         for (int i = 0; i < nodeList.getLength(); i++) {
             Node node = nodeList.item(i);
             if (node.getNodeType() == Node.ELEMENT_NODE) {
@@ -72,7 +50,7 @@ public class XMLBookRepository implements BookRepository {
     @Override
     public List<Book> queryAllBooks() {
         List<Book> books = new ArrayList<>();
-        Document doc = XMLManager.getDocument(BOOKS_FILE);
+        Document doc = XMLUtil.getDocument(BOOKS_FILE);
         NodeList nodeList = doc.getElementsByTagName("item");
         if (nodeList.getLength() == 0) {
             return books;
@@ -99,12 +77,12 @@ public class XMLBookRepository implements BookRepository {
      */
     @Override
     public boolean addOneBook(String bookName, String author, int inventory) {
-        Document doc = XMLManager.getDocument(BOOKS_FILE);
+        Document doc = XMLUtil.getDocument(BOOKS_FILE);
         // 获取根节点
         Node root = doc.getDocumentElement();
         // 创建新数据
         Element dataElement = doc.createElement("item");
-
+        // 创建实体数据信息
         Element bookNameElement = doc.createElement("bookName");
         bookNameElement.appendChild(doc.createTextNode(bookName));
         dataElement.appendChild(bookNameElement);
@@ -121,7 +99,7 @@ public class XMLBookRepository implements BookRepository {
         root.appendChild(importedNode);
 
         // 将更新后的XML文档写回到文件中
-        XMLManager.writeDocument(doc, new File(BOOKS_FILE));
+        XMLUtil.writeDocument(doc, new File(BOOKS_FILE));
         return true;
     }
 
@@ -132,7 +110,7 @@ public class XMLBookRepository implements BookRepository {
      */
     @Override
     public boolean updateBook(String bookName, int inventory) {
-        Document doc = XMLManager.getDocument(BOOKS_FILE);
+        Document doc = XMLUtil.getDocument(BOOKS_FILE);
         NodeList nodeList = doc.getElementsByTagName("item");
         if (nodeList.getLength() == 0) {
             return false;
@@ -151,7 +129,7 @@ public class XMLBookRepository implements BookRepository {
             }
         }
         // 将更新后的XML文档写回到文件中
-        XMLManager.writeDocument(doc, new File(BOOKS_FILE));
+        XMLUtil.writeDocument(doc, new File(BOOKS_FILE));
         return true;
     }
 
@@ -162,7 +140,7 @@ public class XMLBookRepository implements BookRepository {
      */
     @Override
     public boolean deleteOneBook(String bookName, String author) {
-        Document doc = XMLManager.getDocument(BOOKS_FILE);
+        Document doc = XMLUtil.getDocument(BOOKS_FILE);
         NodeList nodeList = doc.getElementsByTagName("item");
         if (nodeList.getLength() == 0) {
             return false;
@@ -181,10 +159,15 @@ public class XMLBookRepository implements BookRepository {
             }
         }
         // 将更新后的XML文档写回到文件中
-        XMLManager.writeDocument(doc, new File(BOOKS_FILE));
+        XMLUtil.writeDocument(doc, new File(BOOKS_FILE));
         return true;
     }
 
+    /**
+     * 解析xml的item数据，封装为对应实体
+     * @param itemElement
+     * @return
+     */
     private Book itemParse(Element itemElement) {
         Book item = new Book();
         item.setBookName(itemElement.getElementsByTagName("bookName").item(0).getTextContent());

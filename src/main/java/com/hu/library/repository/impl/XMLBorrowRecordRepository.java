@@ -4,7 +4,7 @@ import com.hu.library.entity.Book;
 import com.hu.library.entity.BorrowRecord;
 import com.hu.library.repository.BorrowRecordRepository;
 import com.hu.library.server.SessionManager;
-import com.hu.library.server.XMLManager;
+import com.hu.library.utils.XMLUtil;
 import com.hu.library.utils.DateUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -25,7 +25,7 @@ public class XMLBorrowRecordRepository implements BorrowRecordRepository {
      */
     @Override
     public boolean addBorrowRecord(Book book) {
-        Document doc = XMLManager.getDocument(BORROW_RECORDS_FILE);
+        Document doc = XMLUtil.getDocument(BORROW_RECORDS_FILE);
         // 获取根节点
         Node root = doc.getDocumentElement();
         // 创建新数据
@@ -59,7 +59,7 @@ public class XMLBorrowRecordRepository implements BorrowRecordRepository {
         root.appendChild(importedNode);
 
         // 将更新后的XML文档写回到文件中
-        XMLManager.writeDocument(doc, new File(BORROW_RECORDS_FILE));
+        XMLUtil.writeDocument(doc, new File(BORROW_RECORDS_FILE));
         return true;
     }
 
@@ -71,7 +71,7 @@ public class XMLBorrowRecordRepository implements BorrowRecordRepository {
     @Override
     public List<BorrowRecord> queryOnBorrowRecord(String bookName, String author) {
         List<BorrowRecord> borrowRecords = new ArrayList<>();
-        Document doc = XMLManager.getDocument(BORROW_RECORDS_FILE);
+        Document doc = XMLUtil.getDocument(BORROW_RECORDS_FILE);
         NodeList nodeList = doc.getElementsByTagName("item");
         if (nodeList.getLength() == 0) {
             return borrowRecords;
@@ -98,7 +98,7 @@ public class XMLBorrowRecordRepository implements BorrowRecordRepository {
      */
     @Override
     public BorrowRecord queryOneBorrowRecord(String bookName, String author, String userName) {
-        Document doc = XMLManager.getDocument(BORROW_RECORDS_FILE);
+        Document doc = XMLUtil.getDocument(BORROW_RECORDS_FILE);
         NodeList nodeList = doc.getElementsByTagName("item");
         if (nodeList.getLength() == 0) {
             return null;
@@ -123,7 +123,7 @@ public class XMLBorrowRecordRepository implements BorrowRecordRepository {
      */
     @Override
     public boolean updateBorrowRecord(BorrowRecord borrowRecord) {
-        Document doc = XMLManager.getDocument(BORROW_RECORDS_FILE);
+        Document doc = XMLUtil.getDocument(BORROW_RECORDS_FILE);
         NodeList nodeList = doc.getElementsByTagName("item");
         if (nodeList.getLength() == 0) {
             return false;
@@ -145,7 +145,7 @@ public class XMLBorrowRecordRepository implements BorrowRecordRepository {
             }
         }
         // 将更新后的XML文档写回到文件中
-        XMLManager.writeDocument(doc, new File(BORROW_RECORDS_FILE));
+        XMLUtil.writeDocument(doc, new File(BORROW_RECORDS_FILE));
         return true;
     }
 
@@ -156,7 +156,7 @@ public class XMLBorrowRecordRepository implements BorrowRecordRepository {
     @Override
     public List<BorrowRecord> listBorrowedBooks(String userName) {
         List<BorrowRecord> borrowRecords = new ArrayList<>();
-        Document doc = XMLManager.getDocument(BORROW_RECORDS_FILE);
+        Document doc = XMLUtil.getDocument(BORROW_RECORDS_FILE);
         NodeList nodeList = doc.getElementsByTagName("item");
         if (nodeList.getLength() == 0) {
             return borrowRecords;
@@ -174,6 +174,11 @@ public class XMLBorrowRecordRepository implements BorrowRecordRepository {
         return borrowRecords;
     }
 
+    /**
+     * 解析xml的item数据，封装为对应实体
+     * @param itemElement
+     * @return
+     */
     private BorrowRecord itemParse(Element itemElement) {
         BorrowRecord item = new BorrowRecord();
         item.setUserName(itemElement.getElementsByTagName("userName").item(0).getTextContent());

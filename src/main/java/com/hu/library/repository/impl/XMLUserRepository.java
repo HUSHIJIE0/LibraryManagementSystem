@@ -3,7 +3,7 @@ package com.hu.library.repository.impl;
 import com.hu.library.entity.User;
 import com.hu.library.enums.UserType;
 import com.hu.library.repository.UserRepository;
-import com.hu.library.server.XMLManager;
+import com.hu.library.utils.XMLUtil;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -20,7 +20,7 @@ public class XMLUserRepository implements UserRepository {
      */
     @Override
     public User queryUser(String userName) {
-        Document doc = XMLManager.getDocument(USERS_FILE);
+        Document doc = XMLUtil.getDocument(USERS_FILE);
         NodeList nodeList = doc.getElementsByTagName("item");
         if (nodeList.getLength() == 0) {
             return null;
@@ -46,7 +46,7 @@ public class XMLUserRepository implements UserRepository {
      */
     @Override
     public boolean addUser(UserType userType, String userName, String password) {
-        Document doc = XMLManager.getDocument(USERS_FILE);
+        Document doc = XMLUtil.getDocument(USERS_FILE);
         // 获取根节点
         Node root = doc.getDocumentElement();
         // 创建新数据
@@ -68,10 +68,15 @@ public class XMLUserRepository implements UserRepository {
         root.appendChild(importedNode);
 
         // 将更新后的XML文档写回到文件中
-        XMLManager.writeDocument(doc, new File(USERS_FILE));
+        XMLUtil.writeDocument(doc, new File(USERS_FILE));
         return true;
     }
 
+    /**
+     * 解析xml的item数据，封装为对应实体
+     * @param itemElement
+     * @return
+     */
     private User itemParse(Element itemElement) {
         User item = new User();
         item.setUserName(itemElement.getElementsByTagName("userName").item(0).getTextContent());

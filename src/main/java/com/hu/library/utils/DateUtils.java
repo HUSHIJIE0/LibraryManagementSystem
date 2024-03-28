@@ -3,6 +3,9 @@ package com.hu.library.utils;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+/**
+ * 时间日期工具类
+ */
 public class DateUtils {
 
     /**

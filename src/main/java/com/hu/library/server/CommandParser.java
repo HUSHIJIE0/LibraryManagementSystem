@@ -20,9 +20,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
+/**
+ * 初始命令解析器
+ * 持久化，服务层可持续实现用户选择注入，但会增加代码量，简单实现
+ * 命令分派采用switch语句，结构清晰，但权限，新增命令等，需要修改对应代码，不利于扩展维护
+ */
 public class CommandParser {
     // 解析并执行命令
     public static void parseCommand(Scanner scanner) {
+        // 提前注入所有服务类
         UserService userService = new UserServiceImpl(new XMLUserRepository());
         BookService bookService = new BookServiceImpl(new XMLBookRepository(), new XMLBorrowRecordRepository());
         BorrowRecordService borrowRecordService = new BorrowRecordServiceImpl(new XMLBookRepository(), new XMLBorrowRecordRepository());
@@ -129,6 +135,11 @@ public class CommandParser {
         }
     }
 
+    /**
+     * 输入命令解析，解决输入命令包含引号，且参数中间有空格的情况
+     * @param commandLine
+     * @return
+     */
     private static List<String> parseCommand(String commandLine) {
         List<String> parts = new ArrayList<>();
         StringBuilder sb = new StringBuilder();
@@ -145,7 +156,7 @@ public class CommandParser {
             }
         }
 
-        if (sb.length() > 0) {
+        if (!sb.isEmpty()) {
             parts.add(sb.toString());
         }
 

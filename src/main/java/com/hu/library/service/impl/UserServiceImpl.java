@@ -34,11 +34,13 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void login(String userName, String password) {
+        // 查询用户是否存在
         User user = userRepository.queryUser(userName);
         if (user == null) {
             System.out.println("user not exist!");
             return;
         }
+        // 验证密码是否争取，密码未加密处理，简单实现
         if (user.getPassword().equals(password)) {
             SessionManager.getInstance().setCurrentUser(user);
             System.out.println(user.getUserType() + " " + userName + " successfully logged in.");

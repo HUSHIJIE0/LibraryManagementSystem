@@ -2,7 +2,7 @@ package com.hu.library.entity;
 
 /**
  * 图书实体类
- * 包含图书的基本信息，图书借阅状态，当前借阅人等信息
+ * 包含图书的基本信息，书名，作者，库存数量
  */
 public class Book {
     // 书名
