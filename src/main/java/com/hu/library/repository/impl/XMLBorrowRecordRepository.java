@@ -5,6 +5,7 @@ import com.hu.library.entity.BorrowRecord;
 import com.hu.library.repository.BorrowRecordRepository;
 import com.hu.library.server.SessionManager;
 import com.hu.library.server.XMLManager;
+import com.hu.library.utils.DateUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -12,7 +13,6 @@ import org.w3c.dom.NodeList;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 public class XMLBorrowRecordRepository implements BorrowRecordRepository {
@@ -44,7 +44,7 @@ public class XMLBorrowRecordRepository implements BorrowRecordRepository {
         dataElement.appendChild(authorElement);
 
         Element borrowDateElement = doc.createElement("borrowDate");
-        borrowDateElement.appendChild(doc.createTextNode(String.valueOf(new Date())));
+        borrowDateElement.appendChild(doc.createTextNode(DateUtils.formatCurrentDate()));
         dataElement.appendChild(borrowDateElement);
 
         Element returnDateElement = doc.createElement("returnDate");
@@ -139,7 +139,7 @@ public class XMLBorrowRecordRepository implements BorrowRecordRepository {
                     isReturnedElement.setTextContent("yes");
                     // 补充归还日期
                     Element returnDateElement = (Element)itemElement.getElementsByTagName("returnDate").item(0);
-                    returnDateElement.setTextContent(String.valueOf(new Date()));
+                    returnDateElement.setTextContent(DateUtils.formatCurrentDate());
                     break;
                 }
             }
@@ -147,6 +147,31 @@ public class XMLBorrowRecordRepository implements BorrowRecordRepository {
         // 将更新后的XML文档写回到文件中
         XMLManager.writeDocument(doc, new File(BORROW_RECORDS_FILE));
         return true;
+    }
+
+    /**
+     * @param userName
+     * @return
+     */
+    @Override
+    public List<BorrowRecord> listBorrowedBooks(String userName) {
+        List<BorrowRecord> borrowRecords = new ArrayList<>();
+        Document doc = XMLManager.getDocument(BORROW_RECORDS_FILE);
+        NodeList nodeList = doc.getElementsByTagName("item");
+        if (nodeList.getLength() == 0) {
+            return borrowRecords;
+        }
+        for (int i = 0; i < nodeList.getLength(); i++) {
+            Node node = nodeList.item(i);
+            if (node.getNodeType() == Node.ELEMENT_NODE) {
+                Element itemElement = (Element) node;
+                BorrowRecord item = itemParse(itemElement);
+                if (item.getIsReturned().equals("no") && item.getUserName().equals(userName)) {
+                    borrowRecords.add(item);
+                }
+            }
+        }
+        return borrowRecords;
     }
 
     private BorrowRecord itemParse(Element itemElement) {

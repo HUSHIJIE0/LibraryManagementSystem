@@ -23,7 +23,12 @@ public class BorrowRecordServiceImpl implements BorrowRecordService {
 
     @Override
     public void listBorrowedBooks() {
-
+        User user = SessionManager.getInstance().getCurrentUser();
+        List<BorrowRecord> borrowRecords = borrowRecordRepository.listBorrowedBooks(user.getUserName());
+        System.out.println("myList:");
+        for (BorrowRecord record : borrowRecords) {
+            System.out.println(record.getBookName() + " - " + record.getAuthor() + " - borrowDate：" + record.getBorrowDate());
+        }
     }
 
     @Override
@@ -59,15 +64,10 @@ public class BorrowRecordServiceImpl implements BorrowRecordService {
             int inventory = book.getInventory();
             if (bookRepository.updateBook(bookName, inventory + 1)) {
                 if (borrowRecordRepository.updateBorrowRecord(borrowRecord)) {
-                    System.out.println("Book \"" + bookName + "\" " + " successfully borrowed.");
+                    System.out.println("Book \"" + bookName + "\" " + " successfully returned.");
                 }
             }
         }
-    }
-
-    @Override
-    public List<BorrowRecord> queryOnBorrow(String bookName, String author) {
-        return borrowRecordRepository.queryOnBorrowRecord(bookName, author);
     }
 
 }

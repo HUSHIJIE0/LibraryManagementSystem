@@ -14,4 +14,5 @@ public interface BorrowRecordRepository {
 
     boolean updateBorrowRecord(BorrowRecord borrowRecord);
 
+    List<BorrowRecord> listBorrowedBooks(String userName);
 }

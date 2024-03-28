@@ -15,3 +15,5 @@
 8. delete "Clean Code" "Robert C. Martin"
 
 9. return "Clean Code" "Robert C. Martin"
+
+10. myBorrow

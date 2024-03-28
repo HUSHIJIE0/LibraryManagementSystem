@@ -31,7 +31,7 @@ public class CommandParser {
             String input = scanner.nextLine();
             // 解析命令
             List<String> parts = parseCommand(input);
-            if (parts.size() == 0) {
+            if (parts.isEmpty()) {
                 System.out.println("Please enter a command.");
                 continue;
             }
@@ -41,7 +41,7 @@ public class CommandParser {
             switch (command) {
                 case "register":
                     if (parts.size() < 3) {
-                        System.out.println("Usage: register <role> <userName> <password>");
+                        System.out.println("Usage: register <userType> <userName> <password>");
                         continue;
                     }
                     userService.register(UserType.fromString(parts.get(1)), parts.get(2), parts.get(3));
