@@ -61,7 +61,7 @@
 
 4. 按照help命令行，按指引提示进行操作。
 
-![img.png](img.png)
+![img_1.png](img_1.png)
 
 ## 一些思考
 
